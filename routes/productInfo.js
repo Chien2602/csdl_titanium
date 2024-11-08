@@ -5,8 +5,8 @@ const conn = require('../connect');
 const mongoose = require('../connectMongodb');
 
 const connMongo = mongoose.connection;
-connMongo.on('error', (err));
-connMongo.once('open');
+connMongo.on('error', (err) => {});
+connMongo.once('open', ()=> {});
 
 router.get('/', async (req, res) => {
     try {
