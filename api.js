@@ -7,8 +7,8 @@ const employeeRoute = require('./routes/employees');
 const customerRoute = require('./routes/customers');
 const productRoute = require('./routes/product');
 const product_infoRoute = require('./routes/productInfo');
-const oderRoute = require('./routes/oder');
-const oderItemRoute = require('./routes/oderItem');
+const oderRoute = require('./routes/order');
+const oderItemRoute = require('./routes/orderItem');
 const inventoryRoute = require('./routes/inventory');
 const supplierRoute = require('./routes/supplier');
 
