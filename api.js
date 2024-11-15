@@ -1,6 +1,5 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-
 const usersRoute = require('./routes/users');
 const adminRoute = require('./routes/admins');
 const employeeRoute = require('./routes/employees');
@@ -16,6 +15,10 @@ require('dotenv').config();
 const app = express();
 const port = 3000;
 
+
+// Nếu chỉ muốn cho phép một nguồn cụ thể, ví dụ từ localhost:63342
+// app.use(cors({ origin: 'http://localhost:63342' }));
+
 app.use(bodyParser.json());
 
 app.use('/users', usersRoute);
@@ -24,8 +27,8 @@ app.use('/customers', customerRoute);
 app.use('/employees', employeeRoute);
 app.use('/product', productRoute);
 app.use('/productInfo', product_infoRoute);
-app.use('/oder', oderRoute);
-app.use('/oderItem', oderItemRoute);
+app.use('/order', oderRoute);
+app.use('/orderItem', oderItemRoute);
 app.use('/supplier', supplierRoute);
 app.use('/inventory', inventoryRoute);
 

@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const sql = require('mssql/msnodesqlv8');
-const conn = require('../connect');
-const mongoose = require('../connectMongodb');
+const conn = require('../connects/Sql');
+const mongoose = require('../connects/Mongodb');
 
 const connMongo = mongoose.connection;
 connMongo.on('error', (err) => {});
