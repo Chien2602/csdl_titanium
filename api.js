@@ -13,11 +13,12 @@ const supplierRoute = require('./routes/supplier');
 
 require('dotenv').config();
 const app = express();
+const cors = require('cors');
 const port = 3000;
 
 
 // Nếu chỉ muốn cho phép một nguồn cụ thể, ví dụ từ localhost:63342
-// app.use(cors({ origin: 'http://localhost:63342' }));
+app.use(cors({ origin: 'http://localhost:63342' }));
 
 app.use(bodyParser.json());
 

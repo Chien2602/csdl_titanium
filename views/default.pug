@@ -1,0 +1,80 @@
+doctype html
+html
+    head
+        title #{title}
+        link(rel="stylesheet", href="/style.css")
+    body
+        header
+            nav
+                div.container
+                    a.logo(href="/") User Management
+                    ul.menu
+                        li
+                            a(href="/") Home
+                        li
+                            a(href="/user") User Management
+                        li
+                            a(href="/product") Product Management
+                        li
+                            a(href="/order") Order Management
+                        li
+                            a(href="/contact") Contact Us
+                        li.dropdown
+                            a(href="javascript:void(0)") More
+                            ul.dropdown-content
+                                li
+                                    a(href="/about") About Us
+                                li
+                                    a(href="/services") Services
+                                li
+                                    a(href="/careers") Careers
+
+
+        block main
+        // file: views/layouts/footer.pug
+        footer
+            .container
+                .footer-content
+                    .column
+                        h3 About Us
+                        p We are committed to providing the best services to our customers. Our goal is to make your experience amazing.
+                    .column
+                        h3 Quick Links
+                        ul
+                            li
+                                a(href="/") Home
+                            li
+                                a(href="/user") User Management
+                            li
+                                a(href="/product") Product Management
+                            li
+                                a(href="/contact") Contact Us
+                    .column
+                        h3 Contact Information
+                        ul
+                            li
+                                i(class="fas fa-phone-alt") Phone: (123) 456-7890
+                            li
+                                i(class="fas fa-envelope") Email: contact@company.com
+                            li
+                                i(class="fas fa-map-marker-alt") Address: 123 Main Street, City, Country
+                    .column
+                        h3 Follow Us
+                        ul.social-icons
+                            li
+                                a(href="https://facebook.com")
+                                    i(class="fab fa-facebook-f")
+                            li
+                                a(href="https://twitter.com")
+                                    i(class="fab fa-twitter")
+                            li
+                                a(href="https://instagram.com")
+                                    i(class="fab fa-instagram")
+                            li
+                                a(href="https://linkedin.com")
+                                    i(class="fab fa-linkedin-in")
+                .footer-bottom
+                    p &copy; 2024 Your Company. All rights reserved.
+
+
+        script(src="/script.js")
