@@ -21,10 +21,10 @@ const port = 3000;
 
 app.use(bodyParser.json());
 
-app.use('/users', usersRoute);
-app.use('/admins', adminRoute);
-app.use('/customers', customerRoute);
-app.use('/employees', employeeRoute);
+app.use('/user', usersRoute);
+app.use('/admin', adminRoute);
+app.use('/customer', customerRoute);
+app.use('/employee', employeeRoute);
 app.use('/product', productRoute);
 app.use('/productInfo', product_infoRoute);
 app.use('/order', oderRoute);
