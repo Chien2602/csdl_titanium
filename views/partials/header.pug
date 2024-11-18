@@ -1,0 +1,60 @@
+header
+  nav
+    .menu-container
+      a.logo(href="#") My Dashboard
+      input#menu-toggle(type="checkbox")
+      label.menu-icon(for="menu-toggle")
+        i.fas.fa-bars
+      ul.menu
+        li
+          a(href="#")
+            i.fas.fa-user
+            |  User
+        li.dropdown
+          a(href="#")
+            i.fas.fa-cog
+            |  Admin
+          ul.dropdown-content
+            li: a(href="#")
+              i.fas.fa-users
+              |  Manage Users
+            li: a(href="#")
+              i.fas.fa-sliders-h
+              |  Settings
+            li: a(href="#")
+              i.fas.fa-chart-line
+              |  Reports
+        li
+          a(href="#")
+            i.fas.fa-users
+            |  Customer
+        li
+          a(href="#")
+            i.fas.fa-briefcase
+            |  Employee
+        li
+          a(href="#")
+            i.fas.fa-warehouse
+            |  Inventory
+        li.dropdown
+          a(href="#")
+            i.fas.fa-box
+            |  Product
+          ul.dropdown-content
+            li: a(href="#")
+              i.fas.fa-plus
+              |  Add Product
+            li: a(href="#")
+              i.fas.fa-list
+              |  View Products
+            li: a(href="#")
+              i.fas.fa-tags
+              |  Categories
+        li
+          a(href="#")
+            i.fas.fa-shopping-cart
+            |  Order
+        li
+          a(href="#")
+            i.fas.fa-truck
+            |  Supplier
