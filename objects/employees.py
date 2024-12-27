@@ -1,7 +1,7 @@
 import requests
 
 class Employee:
-    API_URL = "http://localhost:3000/employee"
+    API_URL = "http://localhost:3000/employeeRoute"
 
     def __init__(self, EmployeeID=None, Salary=None, DayofBirth=None, rowguid=None):
         self.EmployeeID = EmployeeID

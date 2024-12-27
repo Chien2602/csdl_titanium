@@ -1,0 +1,255 @@
+block main
+  .form-container
+    h2 THÊM NGƯỜI DÙNG
+    form#addEmployeeForm
+      .form-group
+        label(for="UserID") Mã người dùng
+        input(type="text", id="UserID", name="UserID", required)
+
+      .form-group
+        label(for="FullName") Họ và tên
+        input(type="text", id="FullName", name="FullName", required)
+      .form-group
+        label(for="Username") Tên đăng nhập
+        input(type="text", id="Username", name="Username", required)
+      .form-group
+        label(for="Password") Mật khẩu
+        input(type="password", id="Password", name="Password", required)
+      .form-group
+        label(for="PhoneNumber") Số điện thoại
+        input(type="text", id="PhoneNumber", name="PhoneNumber")
+
+      .form-group
+        label(for="email") Email
+        input(type="email", id="email", name="Email", required)
+      .form-group
+        label(for="Ward") Phường
+        input(type="text", id="Ward", name="Ward")
+      .form-group
+        label(for="District") Quận
+        input(type="text", id="District", name="District")
+      .form-group
+        label(for="City") Thành phố
+        input(type="text", id="City", name="City")
+      .form-group
+        label(for="Region") Khu vực
+        select(id="Region", name="Region", required)
+          option(value="Bắc") Bắc
+          option(value="Trung") Trung
+          option(value="Nam") Nam
+
+      .form-group
+        label(for="Role") Phân quyền
+        select(id="gender", name="Role", required)
+          option(value="admin") Quản trị viên
+          option(value="employee") Nhân viên
+          option(value="customer") Khách hàng
+
+      button(type="submit") Thêm nhân viên
+
+      .switch-container
+        p.switch(style="margin-right: 10px") Quay lại trang quản lý nhân viên?
+        a(href="/admin/employee") Danh sách nhân viên
+
+    script.
+      document.addEventListener('DOMContentLoaded', () => {
+        const form = document.querySelector('#addEmployeeForm');  // Fixed selector
+
+        form.addEventListener('submit', async (event) => {
+          event.preventDefault(); // Ngăn reload trang
+          function generateGuid() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                var r = Math.random() * 16 | 0,
+                    v = c === 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+          }
+
+          const formData = new FormData(form);
+
+          const UserID = formData.get('UserID');
+          const Username = formData.get('Username');
+          const Password = formData.get('Password');
+          const Email = formData.get('Email');
+          const FullName = formData.get('FullName');
+          const PhoneNumber = formData.get('PhoneNumber');
+          const Ward = formData.get('Ward');
+          const District = formData.get('District');
+          const City = formData.get('City');
+          const Region = formData.get('Region');
+          const Role = formData.get('Role');
+          const rowguid = generateGuid();
+          const CreatedAt = new Date().toISOString().slice(0, 19).replace('T', ' ');
+          const User = {
+            UserID,
+            Username,
+            Password,
+            Email,
+            FullName,
+            PhoneNumber,
+            Ward,
+            District,
+            City,
+            Region,
+            Role,
+            CreatedAt,
+            rowguid,
+          }
+          console.log(User)
+
+          try {
+            const response = await fetch('http://localhost:3000/usersRoute', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(User),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+              alert('Người dùng đã được thêm thành công!');
+              window.location.href = '/user';
+            } else {
+              alert(`Thêm Người dùng thất bại: ${result.error || 'Lỗi không xác định'}`);
+            }
+          } catch (error) {
+            console.error('Error adding product:', error);
+            alert('Có lỗi xảy ra. Vui lòng thử lại.');
+          }
+        });
+      });
+
+    style.
+      /* Thiết lập cho toàn bộ trang */
+      body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f5f5f5;
+        margin: 0;
+        padding: 0;
+      }
+
+      /* Phần container của form */
+      .form-container {
+        width: 400px;
+        margin: 50px auto;
+        padding: 30px;
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0px 12px 36px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease-in-out;
+      }
+
+      .form-container:hover {
+        box-shadow: 0px 16px 48px rgba(0, 0, 0, 0.15);
+        transform: translateY(-5px);
+      }
+
+      /* Tiêu đề form */
+      h2 {
+        text-align: center;
+        font-size: 26px;
+        color: #333;
+        margin-bottom: 30px;
+        font-weight: bold;
+        letter-spacing: 1px;
+      }
+
+      /* Các nhóm input trong form */
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      /* Các nhãn của input */
+      label {
+        display: block;
+        font-size: 16px;
+        color: #333;
+        margin-bottom: 8px;
+        font-weight: bold;
+      }
+
+      /* Các input và textarea */
+      input[type="text"],
+      input[type="number"],
+      input[type="url"],
+      input[type="email"],
+      input[type="date"],
+      input[type="password"],
+      textarea,
+      select {
+        width: 100%;
+        padding: 12px;
+        margin-top: 5px;
+        font-size: 16px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        background-color: #f9f9f9;
+        transition: border-color 0.3s ease, background-color 0.3s ease;
+      }
+
+      input[type="text"]:focus,
+      input[type="number"]:focus,
+      input[type="url"]:focus,
+      textarea:focus,
+      select:focus {
+        border-color: #007bff;
+        background-color: #e9f5ff;
+        outline: none;
+      }
+
+      /* Textarea với chiều cao tự động */
+      textarea {
+        resize: vertical;
+      }
+
+      /* Button submit */
+      button[type="submit"] {
+        width: 100%;
+        padding: 14px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 18px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+      }
+
+      button[type="submit"]:hover {
+        background-color: #218838;
+        transform: translateY(-3px);
+      }
+
+      button[type="submit"]:active {
+        background-color: #1e7e34;
+      }
+
+      /* Container cho link quay lại */
+      .switch-container {
+        text-align: center;
+        margin-top: 30px;
+      }
+
+      .switch-container a {
+        font-size: 16px;
+        color: #007bff;
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+
+      .switch-container a:hover {
+        color: #0056b3;
+        text-decoration: underline;
+      }
+
+      /* Các input có lỗi */
+      input:invalid,
+      textarea:invalid {
+        border-color: black;
+      }
+
+      input:focus,
+      textarea:focus {
+        border-color: #007bff;
+        outline: none;
+      }

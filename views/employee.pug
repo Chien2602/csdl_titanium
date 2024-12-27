@@ -1,4 +1,175 @@
-extend default
-
+extends default
 block main
-    h1  Trang quản lý nhân viên
+  link(rel="stylesheet", href="/css/tableDefault.css")
+  link(rel="stylesheet", href="/css/modal.css")
+  main(class="table", id="customers_table")
+    section(class="table__header")
+      h1 Danh sách nhân viên
+
+    section(class="table__body")
+      table
+        thead
+          tr
+            th STT
+            th ID
+            th Họ và tên
+            th Email
+            th Ngày sinh
+            th Lương
+            th Hành động
+        tbody
+
+    //- Modal for updating product
+    div(id="updateModal", class="modal")
+      div(class="modal-content")
+        span(class="close") &times;
+        h2(style="text-align: center; margin-bottom: 15px") Cập nhật nhân viên
+        form(id="updateForm")
+          label(for="Salary") Lương:
+          input(type="text", id="Salary", name="Salary", required)
+          label(for="DayofBirth") Ngày sinh:
+          input(type="text", id="DayofBirth", name="DayofBirth", required)
+          label(for="rowguid") rowguid:
+          input(type="text", id="rowguid", name="rowguid", required)
+          button(type="submit") Cập nhật
+
+  script.
+    document.addEventListener('DOMContentLoaded', () => {
+      const loadProducts = (searchQuery = '') => {
+        const api1 = `/employeeRoute${searchQuery ? `?tenSanPham=${searchQuery}` : ''}`;
+        const api2 = `/usersRoute${searchQuery ? `?tenSanPham=${searchQuery}` : ''}`;
+
+        // Gọi API đồng thời
+        Promise.all([fetch(api1), fetch(api2)])
+          .then(responses => Promise.all(responses.map(res => (res.ok ? res.json() : []))))
+          .then(([products1, products2]) => {
+            const mergedProducts = products1.map(product1 => {
+              const product2 = products2.find(p => p.UserID === product1.EmployeeID) || {};
+              return {
+                EmployeeID: product1.EmployeeID || product2.EmployeeID || '',
+                FullName: product1.FullName || product2.FullName || '',
+                Email: product1.Email || product2.Email || '',
+                Salary: product1.Salary || product2.Salary || '',
+                DayofBirth: product1.DayofBirth || 'Unknown',
+                //- productID: product1.ProductID,
+              };
+            });
+
+            const tbody = document.querySelector('#customers_table tbody');
+            tbody.innerHTML = '';
+            mergedProducts.forEach((item, index) => {
+              const row = `
+                <tr>
+                  <td>${index + 1}</td>
+                  <td>${item.EmployeeID}</td>
+                  <td>
+                    ${item.FullName}
+                  </td>
+                  <td>${item.Email}</td>
+                  <td>${item.DayofBirth.split('T')[0]}</td>
+                  <td>${item.Salary} VNĐ</td>
+                  <td>
+                    <button class="btn btn-danger btn-delete" data-id="${item.EmployeeID}" style="background-color:rgb(228, 94, 118)" type="button">Xóa</button>
+                    <button class="btn btn-danger btn-update" data-id="${item.EmployeeID}" style="background-color: #70C2B4" type="button">Cập nhật</button>
+                  </td>
+                </tr>
+              `;
+              tbody.innerHTML += row;
+            });
+
+            attachDeleteEvents(); // Gắn sự kiện xóa sản phẩm
+            attachUpdateEvents(); // Gắn sự kiện cập nhật sản phẩm
+          })
+          .catch(error => console.error('Error fetching products:', error));
+      };
+
+      const input = document.querySelector('.input-text');
+      if (input) {
+        input.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter') {
+            loadProducts(input.value);
+          }
+        });
+      }
+
+      const attachDeleteEvents = () => {
+        const deleteButtons = document.querySelectorAll('.btn-delete');
+        deleteButtons.forEach((button) => {
+          button.addEventListener('click', (event) => {
+            const productId = event.target.dataset.id;
+            if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
+              fetch(`/admin/deleteProduct/${productId}`, { method: 'DELETE' })
+                .then((response) => {
+                  if (response.ok) {
+                    alert('Xóa sản phẩm thành công!');
+                    loadProducts();
+                  } else {
+                    alert('Có lỗi xảy ra khi xóa sản phẩm.');
+                  }
+                })
+                .catch((error) => console.error('Error:', error));
+            }
+          });
+        });
+      };
+
+      const attachUpdateEvents = () => {
+        const updateButtons = document.querySelectorAll('.btn-update');
+        updateButtons.forEach((button) => {
+          button.addEventListener('click', (event) => {
+            const productId = event.target.dataset.id;
+            // Lấy dữ liệu của sản phẩm từ API
+            fetch(`/employeeRoute/${productId}`)
+              .then(res => res.json())
+              .then(product => {
+                const employee = product[0]
+                // Điền dữ liệu vào modal
+                document.getElementById('Salary').value = employee.Salary;
+                document.getElementById('DayofBirth').value = employee.DayofBirth.split('T')[0];
+                document.getElementById('rowguid').value = employee.rowguid;
+
+                // Mở modal
+                const modal = document.getElementById('updateModal');
+                modal.style.display = 'block';
+
+                // Cập nhật dữ liệu khi gửi form
+                document.getElementById('updateForm').onsubmit = (e) => {
+                  e.preventDefault();
+                  const updatedProduct = {
+                    Salary: document.getElementById('Salary').value,
+                    DayofBirth: document.getElementById('DayofBirth').value,
+                    rowguid: document.getElementById('rowguid').value,
+                  };
+
+                  // Gửi dữ liệu cập nhật đến API
+                  fetch(`/employeeRoute/${productId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updatedProduct),
+                  })
+                    .then((response) => {
+                      if (response.ok) {
+                        alert('Cập nhật nhân viên thành công!');
+                        loadProducts();
+                        modal.style.display = 'none'; // Đóng modal sau khi cập nhật
+                      } else {
+                        alert('Có lỗi xảy ra khi cập nhật sản phẩm.');
+                      }
+                    })
+                    .catch((error) => console.error('Error:', error));
+                };
+              })
+              .catch((error) => console.error('Error fetching product details:', error));
+          });
+        });
+      };
+
+      // Đóng modal
+      const closeModal = document.querySelector('.close');
+      closeModal.addEventListener('click', () => {
+        document.getElementById('updateModal').style.display = 'none';
+      });
+
+      // Load products initially
+      loadProducts();
+    });

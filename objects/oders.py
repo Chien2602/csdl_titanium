@@ -1,7 +1,7 @@
 import requests
 
 class Order:
-    API_URL = "http://localhost:3000/order"
+    API_URL = "http://localhost:3000/orderRoute"
 
     def __init__(self, OrderID=None, CustomerID=None, OrderDate=None, TotalAmount=None, Status=None, rowguid=None):
         self.OrderID = OrderID

@@ -1,4 +1,169 @@
 extends default
-
 block main
-    h1 Trang mua hàng
+  link(rel="stylesheet", href="/css/tableDefault.css")
+  link(rel="stylesheet", href="/css/modal.css")
+  main(class="table", id="customers_table")
+    section(class="table__header")
+      h1 Danh sách người dùng
+      button(onclick="window.location.href='/addOrder' class="insert" style="margin-right: 40px; margin-top: 25px; height: 45px; border: none; width: 150px; border-radius: 5px; background-color:rgb(74, 119, 168); color: white") Thêm đơn hàng
+
+    section(class="table__body")
+      table
+        thead
+          tr
+            th STT
+            th Mã đơn hàng
+            th Mã người dùng
+            th Ngày đặt hàng
+            th Tổng tiền
+            th Trạng thái
+            th Hành động
+        tbody
+
+    //- Modal for updating product
+    div(id="updateModal", class="modal")
+      div(class="modal-content")
+        span(class="close") &times;
+        h2(style="text-align: center; margin-bottom: 15px") Cập nhật đơn hàng
+        form(id="updateForm")
+          label(for="CustomerID") Mã người dùng:
+          input(type="text", id="CustomerID", name="CustomerID", required)
+          label(for="OrderDate") Ngày đặt hàng:
+          input(type="text", id="OrderDate", name="OrderDate", required)
+          label(for="TotalAmount") Tổng tiền:
+          input(type="text", id="TotalAmount", name="TotalAmount", required)
+          label(for="Status") Trạng thái:
+          input(type="text", id="Status", name="Status", required)
+          label(for="rowguid") rowguid:
+          input(type="text", id="rowguid", name="rowguid", required)
+          button(type="submit") Cập nhật
+
+  script.
+    document.addEventListener('DOMContentLoaded', () => {
+      const loadProducts = (searchQuery = '') => {
+        const api = `/orderRoute`;
+
+        // Gọi API để lấy thông tin sản phẩm
+        fetch(api)
+          .then(res => res.json())
+          .then(user => {
+            const tbody = document.querySelector('#customers_table tbody');
+            tbody.innerHTML = '';
+            user.forEach((product, index) => {
+              const row = `
+                <tr>
+                  <td>${index + 1}</td>
+                  <td>${product.OrderID}</td>
+                  <td>${product.CustomerID}</td>
+                  <td>${product.OrderDate}</td>
+                  <td>${product.TotalAmount} VNĐ</td>
+                  <td>${product.Status}</td>
+                  <td>
+                    <button class="btn btn-danger btn-delete" data-id="${product.OrderID}" style="background-color:rgb(228, 94, 118)" type="button">Xóa</button>
+                    <button class="btn btn-danger btn-update" data-id="${product.OrderID}" style="background-color: #70C2B4" type="button">Cập nhật</button>
+                  </td>
+                </tr>
+              `;
+              tbody.innerHTML += row;
+            });
+
+            attachDeleteEvents();
+            attachUpdateEvents();
+          })
+          .catch(error => console.error('Error fetching products:', error));
+      };
+
+      const input = document.querySelector('.input-text');
+      if (input) {
+        input.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter') {
+            loadProducts(input.value);
+          }
+        });
+      }
+
+      const attachDeleteEvents = () => {
+        const deleteButtons = document.querySelectorAll('.btn-delete');
+        deleteButtons.forEach((button) => {
+          button.addEventListener('click', (event) => {
+            const productId = event.target.dataset.id;
+            if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
+              fetch(`/orderRoute/${productId}`, { method: 'DELETE' })
+                .then((response) => {
+                  if (response.ok) {
+                    alert('Xóa sản phẩm thành công!');
+                    loadProducts();
+                  } else {
+                    alert('Có lỗi xảy ra khi xóa sản phẩm.');
+                  }
+                })
+                .catch((error) => console.error('Error:', error));
+            }
+          });
+        });
+      };
+
+      const attachUpdateEvents = () => {
+        const updateButtons = document.querySelectorAll('.btn-update');
+        updateButtons.forEach((button) => {
+          button.addEventListener('click', (event) => {
+            const productId = event.target.dataset.id;
+            // Lấy dữ liệu của sản phẩm từ API
+            fetch(`/orderRoute/${productId}`)
+              .then(res => res.json())
+              .then(product => {
+                // Điền dữ liệu vào modal
+                const order = product[0]
+                document.getElementById('CustomerID').value = order.CustomerID || '';
+                document.getElementById('OrderDate').value = order.OrderDate ? order.OrderDate.split('T')[0] : '';
+                document.getElementById('TotalAmount').value = order.TotalAmount || '';
+                document.getElementById('Status').value = order.Status || '';
+                document.getElementById('rowguid').value = order.rowguid || '';
+
+                // Mở modal
+                const modal = document.getElementById('updateModal');
+                modal.style.display = 'block';
+
+                // Cập nhật dữ liệu khi gửi form
+                document.getElementById('updateForm').onsubmit = (e) => {
+                  e.preventDefault();
+                  const updatedProduct = {
+                    CustomerID: document.getElementById('CustomerID').value,
+                    OrderDate: document.getElementById('OrderDate').value,
+                    TotalAmount: document.getElementById('TotalAmount').value,
+                    Status: document.getElementById('Status').value,
+                    rowguid: document.getElementById('rowguid').value
+                  };
+
+                  // Gửi dữ liệu cập nhật đến API
+                  fetch(`/orderRoute/${productId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updatedProduct),
+                  })
+                    .then((response) => {
+                      if (response.ok) {
+                        alert('Cập nhật đơn hàng thành công!');
+                        loadProducts();
+                        modal.style.display = 'none'; // Đóng modal sau khi cập nhật
+                      } else {
+                        alert('Có lỗi xảy ra khi cập nhật sản phẩm.');
+                      }
+                    })
+                    .catch((error) => console.error('Error:', error));
+                };
+              })
+              .catch((error) => console.error('Error fetching product details:', error));
+          });
+        });
+      };
+
+      // Đóng modal
+      const closeModal = document.querySelector('.close');
+      closeModal.addEventListener('click', () => {
+        document.getElementById('updateModal').style.display = 'none';
+      });
+
+      // Load products initially
+      loadProducts();
+    });

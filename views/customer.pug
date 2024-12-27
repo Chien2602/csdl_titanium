@@ -1,4 +1,168 @@
-extend default
-
+extends default
 block main
-    h1  Trang quản lý khách hàng
+  link(rel="stylesheet", href="/css/tableDefault.css")
+  link(rel="stylesheet", href="/css/modal.css")
+  main(class="table", id="customers_table")
+    section(class="table__header")
+      h1 Danh sách nhân viên
+
+    section(class="table__body")
+      table
+        thead
+          tr
+            th STT
+            th ID
+            th Họ và tên
+            th Email
+            th Điểm tích lũy
+            th Hành động
+        tbody
+
+    //- Modal for updating product
+    div(id="updateModal", class="modal")
+      div(class="modal-content")
+        span(class="close") &times;
+        h2(style="text-align: center; margin-bottom: 15px") Cập nhật khách hàng
+        form(id="updateForm")
+          label(for="LoyaltyPoints") Điểm tích lũy:
+          input(type="text", id="LoyaltyPoints", name="LoyaltyPoints", required)
+          label(for="rowguid") rowguid:
+          input(type="text", id="rowguid", name="rowguid", required)
+          button(type="submit") Cập nhật
+
+  script.
+    document.addEventListener('DOMContentLoaded', () => {
+      const loadProducts = (searchQuery = '') => {
+        const api1 = `/customerRoute${searchQuery ? `?tenSanPham=${searchQuery}` : ''}`;
+        const api2 = `/usersRoute${searchQuery ? `?tenSanPham=${searchQuery}` : ''}`;
+
+        // Gọi API đồng thời
+        Promise.all([fetch(api1), fetch(api2)])
+          .then(responses => Promise.all(responses.map(res => (res.ok ? res.json() : []))))
+          .then(([products1, products2]) => {
+            const mergedProducts = products1.map(product1 => {
+              const product2 = products2.find(p => p.UserID === product1.CustomerID) || {};
+              return {
+                CustomerID: product1.CustomerID || product2.CustomerID || '',
+                FullName: product1.FullName || product2.FullName || '',
+                Email: product1.Email || product2.Email || '',
+                LoyaltyPoints: product1.LoyaltyPoints || product2.LoyaltyPoints || '',
+                //- productID: product1.ProductID,
+              };
+            });
+
+            const tbody = document.querySelector('#customers_table tbody');
+            tbody.innerHTML = '';
+            mergedProducts.forEach((item, index) => {
+              const row = `
+                <tr>
+                  <td>${index + 1}</td>
+                  <td>${item.CustomerID}</td>
+                  <td>
+                    ${item.FullName}
+                  </td>
+                  <td>${item.Email}</td>
+                  <td>${item.LoyaltyPoints} ⭐</td>
+                  <td>
+                    <button class="btn btn-danger btn-delete" data-id="${item.CustomerID}" style="background-color:rgb(228, 94, 118)" type="button">Xóa</button>
+                    <button class="btn btn-danger btn-update" data-id="${item.CustomerID}" style="background-color: #70C2B4" type="button">Cập nhật</button>
+                  </td>
+                </tr>
+              `;
+              tbody.innerHTML += row;
+            });
+
+            attachDeleteEvents(); // Gắn sự kiện xóa sản phẩm
+            attachUpdateEvents(); // Gắn sự kiện cập nhật sản phẩm
+          })
+          .catch(error => console.error('Error fetching products:', error));
+      };
+
+      const input = document.querySelector('.input-text');
+      if (input) {
+        input.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter') {
+            loadProducts(input.value);
+          }
+        });
+      }
+
+      const attachDeleteEvents = () => {
+        const deleteButtons = document.querySelectorAll('.btn-delete');
+        deleteButtons.forEach((button) => {
+          button.addEventListener('click', (event) => {
+            const productId = event.target.dataset.id;
+            if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
+              fetch(`/customerRoute/${productId}`, { method: 'DELETE' })
+                .then((response) => {
+                  if (response.ok) {
+                    alert('Xóa sản phẩm thành công!');
+                    loadProducts();
+                  } else {
+                    alert('Có lỗi xảy ra khi xóa sản phẩm.');
+                  }
+                })
+                .catch((error) => console.error('Error:', error));
+            }
+          });
+        });
+      };
+
+      const attachUpdateEvents = () => {
+        const updateButtons = document.querySelectorAll('.btn-update');
+        updateButtons.forEach((button) => {
+          button.addEventListener('click', (event) => {
+            const productId = event.target.dataset.id;
+            // Lấy dữ liệu của sản phẩm từ API
+            fetch(`/customerRoute/${productId}`)
+              .then(res => res.json())
+              .then(product => {
+                // Điền dữ liệu vào modal
+                const customer = product[0]
+                document.getElementById('LoyaltyPoints').value = customer.LoyaltyPoints;
+                document.getElementById('rowguid').value = customer.rowguid;
+
+                // Mở modal
+                const modal = document.getElementById('updateModal');
+                modal.style.display = 'block';
+
+                // Cập nhật dữ liệu khi gửi form
+                document.getElementById('updateForm').onsubmit = (e) => {
+                  e.preventDefault();
+                  const updatedProduct = {
+                    LoyaltyPoints: document.getElementById('LoyaltyPoints').value,
+                    rowguid: document.getElementById('rowguid').value,
+                  };
+
+                  // Gửi dữ liệu cập nhật đến API
+                  fetch(`/customerRoute/${productId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updatedProduct),
+                  })
+                    .then((response) => {
+                      if (response.ok) {
+                        alert('Cập nhật sản phẩm thành công!');
+                        loadProducts();
+                        modal.style.display = 'none'; // Đóng modal sau khi cập nhật
+                      } else {
+                        alert('Có lỗi xảy ra khi cập nhật sản phẩm.');
+                      }
+                    })
+                    .catch((error) => console.error('Error:', error));
+                };
+              })
+              .catch((error) => console.error('Error fetching product details:', error));
+          });
+        });
+      };
+
+      // Đóng modal
+      const closeModal = document.querySelector('.close');
+      closeModal.addEventListener('click', () => {
+        document.getElementById('updateModal').style.display = 'none';
+      });
+
+      // Load products initially
+      loadProducts();
+    });

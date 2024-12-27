@@ -1,60 +1,47 @@
-header
-  nav
-    .menu-container
-      a.logo(href="#") My Dashboard
-      input#menu-toggle(type="checkbox")
-      label.menu-icon(for="menu-toggle")
-        i.fas.fa-bars
-      ul.menu
-        li
-          a(href="#")
-            i.fas.fa-user
-            |  User
-        li.dropdown
-          a(href="#")
-            i.fas.fa-cog
-            |  Admin
-          ul.dropdown-content
-            li: a(href="#")
-              i.fas.fa-users
-              |  Manage Users
-            li: a(href="#")
-              i.fas.fa-sliders-h
-              |  Settings
-            li: a(href="#")
-              i.fas.fa-chart-line
-              |  Reports
-        li
-          a(href="#")
-            i.fas.fa-users
-            |  Customer
-        li
-          a(href="#")
-            i.fas.fa-briefcase
-            |  Employee
-        li
-          a(href="#")
-            i.fas.fa-warehouse
-            |  Inventory
-        li.dropdown
-          a(href="#")
-            i.fas.fa-box
-            |  Product
-          ul.dropdown-content
-            li: a(href="#")
-              i.fas.fa-plus
-              |  Add Product
-            li: a(href="#")
-              i.fas.fa-list
-              |  View Products
-            li: a(href="#")
-              i.fas.fa-tags
-              |  Categories
-        li
-          a(href="#")
-            i.fas.fa-shopping-cart
-            |  Order
-        li
-          a(href="#")
-            i.fas.fa-truck
-            |  Supplier
+link(rel="stylesheet", href="/css/partial.css")
+
+.navbar-vertical.d-flex.flex-column.align-items-start
+  .navbar-header.d-flex.align-items-center
+    img(src="/image/image.png", alt="ảnh lỗi", class="logo")
+    h3 Clothing Store
+  a.nav-link.ms-3(href="http://localhost:3000/users")
+    .icon-container
+      i.fa-light.fa-user
+
+    .text-container
+      span User
+  a.nav-link.ms-3(href="http://localhost:3000/admin")
+    .icon-container
+      i.fa-light.fa-user-shield
+    .text-container
+      span Admin
+  a.nav-link.ms-3(href="http://localhost:3000/employee")
+    .icon-container
+      i.fa-light.fa-users-cog
+    .text-container
+      span Employee
+  a.nav-link.ms-3(href="http://localhost:3000/customer")
+    .icon-container
+      i.fa-light.fa-user-tie
+    .text-container
+      span Customer
+  a.nav-link.ms-3(href="http://localhost:3000/product")
+    .icon-container
+      i.fa-light.fa-cogs
+    .text-container
+      span Product
+  a.nav-link.ms-3(href="http://localhost:3000/order")
+    .icon-container
+      i.fa-light.fa-box
+    .text-container
+      span Order
+  a.nav-link.ms-3(href="http://localhost:3000/inventory")
+    .icon-container
+      i.fa-light.fa-warehouse
+    .text-container
+      span Inventory 
+  a.nav-link.ms-3(href="http://localhost:3000/supplier")
+    .icon-container
+      i.fa-light.fa-truck
+    .text-container
+      span Supplier

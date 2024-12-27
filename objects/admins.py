@@ -1,7 +1,7 @@
 import requests
 
 class Admin:
-    API_URL = "http://localhost:3000/admin"
+    API_URL = "http://localhost:3000/adminRoute"
 
     def __init__(self, AdminID=None, DayofBirth=None, rowguid=None):
         self.AdminID = AdminID

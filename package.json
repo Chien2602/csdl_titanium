@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.7.7",
     "body-parser": "^1.20.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
@@ -18,8 +19,11 @@
     "mssql": "^11.0.1",
     "pug": "^3.0.3"
   },
-  "description": "",
   "devDependencies": {
     "nodemon": "^3.1.7"
-  }
+  },
+  "directories": {
+    "test": "test"
+  },
+  "description": ""
 }

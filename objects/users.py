@@ -1,10 +1,10 @@
 import requests
 
 class User:
-    API_URL = "http://localhost:3000/users"
+    API_URL = "http://localhost:3000/usersRoute"
 
     def __init__(self, UserID=None, Username=None, Password=None, Email=None, FullName=None, PhoneNumber=None,
-                 Ward=None, District=None, City=None, Role='customer', CreatedAt=None):
+                 Ward=None, District=None, City=None, Region=None, Role='customer', CreatedAt=None):
         self.UserID = UserID
         self.Username = Username
         self.Password = Password
@@ -14,6 +14,7 @@ class User:
         self.Ward = Ward
         self.District = District
         self.City = City
+        self.Region = Region
         self.Role = Role
         self.CreatedAt = CreatedAt
 
@@ -77,8 +78,9 @@ class User:
         Ward = input("Ward: ")
         District = input("District: ")
         City = input("City: ")
+        Region = input("Region: ")
         Role = input("Role (default: customer): ") or 'customer'
-        user = User(UserID, Username, Password, Email, FullName, PhoneNumber, Ward, District, City, Role)
+        user = User(UserID, Username, Password, Email, FullName, PhoneNumber, Ward, District, City, Region, Role)
         user.save_to_api()
 
     def update_user_from_input(UserID):
@@ -91,6 +93,7 @@ class User:
         updated_data['Ward'] = input("Ward: ") or None
         updated_data['District'] = input("District: ") or None
         updated_data['City'] = input("City: ") or None
+        updated_data['Region'] = input("Region: ") or None
         updated_data['Role'] = input("Role: ") or None
         updated_data = {k: v for k, v in updated_data.items() if v}
         User.update_user(UserID, updated_data)

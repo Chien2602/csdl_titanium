@@ -1,4 +1,182 @@
 extends default
-
 block main
-    h1 Trang sản phẩm
+  link(rel="stylesheet", href="/css/tableDefault.css")
+  link(rel="stylesheet", href="/css/modal.css")
+  main(class="table", id="customers_table")
+    section(class="table__header")
+      h1 Quản Lý Sản Phẩm
+      button(class="insert" style="margin-right: 40px; margin-top: 25px; height: 45px; border: none; width: 150px; border-radius: 5px; background-color: rgb(74, 119, 168); color: white" onclick="window.location.href='/addProduct'") Thêm sản phẩm
+
+    section(class="table__body")
+      table
+        thead
+          tr
+            th STT
+            th ID
+            th Hình ảnh
+            th Tiêu đề
+            th Giá
+            th Mô tả
+            th Hành động
+        tbody
+
+    //- Modal for updating product
+    div(id="updateModal", class="modal")
+      div(class="modal-content")
+        span(class="close") &times;
+        h2(style="text-align: center; margin-bottom: 15px") Cập Nhật Sản Phẩm
+        form(id="updateForm")
+          label(for="ProductName") Tên sản phẩm:
+          input(type="text", id="ProductName", name="ProductName", required)
+
+          label(for="Price") Giá sản phẩm:
+          input(type="text", id="Price", name="Price", required)
+
+          label(for="StockQuantity") Số lượng:
+          input(type="text", id="StockQuantity", name="StockQuantity", required)
+
+          label(for="rowguid") rowguid:
+          input(type="text", id="rowguid", name="rowguid", required)
+          button(type="submit") Cập Nhật
+
+  
+  script.
+    document.addEventListener('DOMContentLoaded', () => {
+      const loadProducts = (searchQuery = '') => {
+        const api1 = `/productRoute${searchQuery ? `?tenSanPham=${searchQuery}` : ''}`;
+        const api2 = `/product_infoRoute${searchQuery ? `?tenSanPham=${searchQuery}` : ''}`;
+
+        // Gọi API đồng thời
+        Promise.all([fetch(api1), fetch(api2)])
+          .then(responses => Promise.all(responses.map(res => (res.ok ? res.json() : []))))
+          .then(([products1, products2]) => {
+            const mergedProducts = products1.map(product1 => {
+              const product2 = products2.find(p => p.ProductID === product1.ProductID) || {};
+              return {
+                Image: product1.Image1 || product2.Image || '',
+                ProductName: product1.ProductName || product2.name || '',
+                Price: product1.Price || product2.price || '',
+                Description: product2.Description || 'Unknown',
+                productID: product1.ProductID,
+              };
+            });
+
+            const tbody = document.querySelector('#customers_table tbody');
+            tbody.innerHTML = '';
+            mergedProducts.forEach((item, index) => {
+              const row = `
+                <tr>
+                  <td>${index + 1}</td>
+                  <td>${item.productID}</td>
+                  <td>
+                    <img src="${item.Image}" alt="Hình ảnh của sản phẩm ${item.ProductName}" class="product-image">
+                  </td>
+                  <td>${item.ProductName}</td>
+                  <td>${item.Price} VNĐ</td>
+                  <td>${item.Description}</td>
+                  <td>
+                    <button class="btn btn-danger btn-delete" data-id="${item.productID}" style="background-color:rgb(228, 94, 118)" type="button">Xóa</button>
+                    <button class="btn btn-danger btn-update" data-id="${item.productID}" style="background-color: #70C2B4" type="button">Cập nhật</button>
+                  </td>
+                </tr>
+              `;
+              tbody.innerHTML += row;
+            });
+
+            attachDeleteEvents(); // Gắn sự kiện xóa sản phẩm
+            attachUpdateEvents(); // Gắn sự kiện cập nhật sản phẩm
+          })
+          .catch(error => console.error('Error fetching products:', error));
+      };
+
+      const input = document.querySelector('.input-text');
+      if (input) {
+        input.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter') {
+            loadProducts(input.value);
+          }
+        });
+      }
+
+      const attachDeleteEvents = () => {
+        const deleteButtons = document.querySelectorAll('.btn-delete');
+        deleteButtons.forEach((button) => {
+          button.addEventListener('click', (event) => {
+            const productId = event.target.dataset.id;
+            if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
+              fetch(`/productRoute/${productId}`, { method: 'DELETE' })
+                .then((response) => {
+                  if (response.ok) {
+                    alert('Xóa sản phẩm thành công!');
+                    loadProducts();
+                  } else {
+                    alert('Có lỗi xảy ra khi xóa sản phẩm.');
+                  }
+                })
+                .catch((error) => console.error('Error:', error));
+            }
+          });
+        });
+      };
+
+      const attachUpdateEvents = () => {
+        const updateButtons = document.querySelectorAll('.btn-update');
+        updateButtons.forEach((button) => {
+          button.addEventListener('click', (event) => {
+            const productId = event.target.dataset.id;
+            // Lấy dữ liệu của sản phẩm từ API
+            fetch(`/productRoute/${productId}`)
+              .then(res => res.json())
+              .then(product => {
+                // Điền dữ liệu vào modal
+                products = product[0];
+                document.getElementById('ProductName').value = products.ProductName || '';
+                document.getElementById('Price').value = products.Price || '';
+                document.getElementById('StockQuantity').value = products.StockQuantity || '';
+                document.getElementById('rowguid').value = products.rowguid || '';
+
+                // Mở modal
+                const modal = document.getElementById('updateModal');
+                modal.style.display = 'block';
+
+                // Cập nhật dữ liệu khi gửi form
+                document.getElementById('updateForm').onsubmit = (e) => {
+                  e.preventDefault();
+                  const updatedProduct = {
+                    ProductName: document.getElementById('productName').value,
+                    Price: document.getElementById('price').value,
+                    Description: document.getElementById('description').value,
+                  };
+
+                  // Gửi dữ liệu cập nhật đến API
+                  fetch(`/productRoute/${productId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updatedProduct),
+                  })
+                    .then((response) => {
+                      if (response.ok) {
+                        alert('Cập nhật sản phẩm thành công!');
+                        loadProducts();
+                        modal.style.display = 'none'; // Đóng modal sau khi cập nhật
+                      } else {
+                        alert('Có lỗi xảy ra khi cập nhật sản phẩm.');
+                      }
+                    })
+                    .catch((error) => console.error('Error:', error));
+                };
+              })
+              .catch((error) => console.error('Error fetching product details:', error));
+          });
+        });
+      };
+
+      // Đóng modal
+      const closeModal = document.querySelector('.close');
+      closeModal.addEventListener('click', () => {
+        document.getElementById('updateModal').style.display = 'none';
+      });
+
+      // Load products initially
+      loadProducts();
+    });

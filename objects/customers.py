@@ -1,7 +1,7 @@
 import requests
 
 class Customer:
-    API_URL = "http://localhost:3000/customer"
+    API_URL = "http://localhost:3000/customerRoute"
 
     def __init__(self, CustomerID=None, LoyaltyPoints=None, rowguid=None):
         self.CustomerID = CustomerID

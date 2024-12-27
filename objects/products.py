@@ -1,7 +1,7 @@
 import requests
 
 class Product:
-    API_URL = "http://localhost:3000/product"
+    API_URL = "http://localhost:3000/productRoute"
 
     def __init__(self, ProductID=None, ProductName=None, Price=None, StockQuantity=None, rowguid=None):
         self.ProductID = ProductID

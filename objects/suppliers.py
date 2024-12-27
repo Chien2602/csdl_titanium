@@ -1,7 +1,7 @@
 import requests
 
 class Supplier:
-    API_URL = "http://localhost:3000/supplier"
+    API_URL = "http://localhost:3000/supplierRoute"
 
     def __init__(self, SupplierID=None, SupplierName=None, ContactName=None, ContactEmail=None, PhoneNumber=None,
                  Address=None, City=None, District=None, Ward=None, rowguid=None):

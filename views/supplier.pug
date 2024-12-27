@@ -1,4 +1,194 @@
 extends default
-
 block main
-    h1 Trang nhà cung cấp
+  link(rel="stylesheet", href="/css/tableDefault.css")
+  link(rel="stylesheet", href="/css/modal.css")
+  main(class="table", id="customers_table")
+    section(class="table__header")
+      h1 Danh sách nhà cung cấp
+      button(onclick="window.location.href='/addSupplier' class="insert" style="margin-right: 40px; margin-top: 25px; height: 45px; border: none; width: 200px; border-radius: 5px; background-color:rgb(74, 119, 168); color: white") Thêm nhà cung cấp
+
+    section(class="table__body")
+      table
+        thead
+          tr
+            th STT
+            th Mã NCC
+            th Tên NCC
+            th Tên NLH
+            th Email NLH
+            th Địa chỉ
+            th Hành động
+        tbody
+
+    //- Modal for updating product
+    div(id="updateModal", class="modal")
+      div(class="modal-content")
+        span(class="close") &times;
+        h2(style="text-align: center; margin-bottom: 15px") Cập nhật nhà cung cấp
+        form(id="updateForm")
+          label(for="SupplierName") Tên nhà cung cấp:
+          input(type="text", id="SupplierName", name="SupplierName", required)
+
+          label(for="ContactName") Tên người liên hệ:
+          input(type="text", id="ContactName", name="ContactName", required)
+
+          label(for="ContactEmail") Email người liên hệ:
+          input(type="text", id="ContactEmail", name="ContactEmail", required)
+
+          label(for="PhoneNumber") SĐT:
+          input(type="text", id="PhoneNumber", name="PhoneNumber", required)
+
+          label(for="Address") Địa chỉ Đường:
+          input(type="text", id="Address", name="Address", required)
+
+          label(for="Ward") Phường:
+          input(type="text", id="Ward", name="Ward", required)
+
+          label(for="District") Quận:
+          input(type="text", id="District", name="District", required)
+
+          label(for="City") Thành phố:
+          input(type="text", id="City", name="City", required)
+
+          label(for="rowguid") rowguid:
+          input(type="text", id="rowguid", name="rowguid", required)
+
+          button(type="submit") Cập Nhật
+
+  script.
+    document.addEventListener('DOMContentLoaded', () => {
+      const loadProducts = (searchQuery = '') => {
+        const api = `/supplierRoute`;
+
+        // Gọi API để lấy thông tin sản phẩm
+        fetch(api)
+          .then(res => res.json())
+          .then(user => {
+            const tbody = document.querySelector('#customers_table tbody');
+            tbody.innerHTML = '';
+            user.forEach((product, index) => {
+              const row = `
+                <tr>
+                  <td>${index + 1}</td>
+                  <td>${product.SupplierID}</td>
+                  <td>${product.SupplierName}</td>
+                  <td>${product.ContactName}</td>
+                  <td>${product.ContactEmail}</td>
+                  <td>${product.City}</td>
+                  <td>
+                    <button class="btn btn-danger btn-delete" data-id="${product.SupplierID}" style="background-color:rgb(228, 94, 118)" type="button">Xóa</button>
+                    <button class="btn btn-danger btn-update" data-id="${product.SupplierID}" style="background-color: #70C2B4" type="button">Cập nhật</button>
+                  </td>
+                </tr>
+              `;
+              tbody.innerHTML += row;
+            });
+
+            attachDeleteEvents();
+            attachUpdateEvents();
+          })
+          .catch(error => console.error('Error fetching products:', error));
+      };
+
+      const input = document.querySelector('.input-text');
+      if (input) {
+        input.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter') {
+            loadProducts(input.value);
+          }
+        });
+      }
+
+      const attachDeleteEvents = () => {
+        const deleteButtons = document.querySelectorAll('.btn-delete');
+        deleteButtons.forEach((button) => {
+          button.addEventListener('click', (event) => {
+            const productId = event.target.dataset.id;
+            if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
+              fetch(`/supplierRoute/${productId}`, { method: 'DELETE' })
+                .then((response) => {
+                  if (response.ok) {
+                    alert('Xóa sản phẩm thành công!');
+                    loadProducts();
+                  } else {
+                    alert('Có lỗi xảy ra khi xóa sản phẩm.');
+                  }
+                })
+                .catch((error) => console.error('Error:', error));
+            }
+          });
+        });
+      };
+
+      const attachUpdateEvents = () => {
+        const updateButtons = document.querySelectorAll('.btn-update');
+        updateButtons.forEach((button) => {
+          button.addEventListener('click', (event) => {
+            const productId = event.target.dataset.id;
+            // Lấy dữ liệu của sản phẩm từ API
+            fetch(`/supplierRoute/${productId}`)
+              .then(res => res.json())
+              .then(product => {
+                // Điền dữ liệu vào modal
+                 const user = product[0];
+                 document.getElementById('SupplierName').value = user.SupplierName;
+                 document.getElementById('ContactName').value = user.ContactName;
+                 document.getElementById('ContactEmail').value = user.ContactEmail;
+                 document.getElementById('PhoneNumber').value = user.PhoneNumber;
+                 document.getElementById('Address').value = user.Address;
+                 document.getElementById('Ward').value = user.Ward;
+                 document.getElementById('District').value = user.District;
+                 document.getElementById('City').value = user.City;
+                 document.getElementById('rowguid').value = user.rowguid;
+
+                // Mở modal
+                const modal = document.getElementById('updateModal');
+                modal.style.display = 'block';
+
+                // Cập nhật dữ liệu khi gửi form
+                document.getElementById('updateForm').onsubmit = (e) => {
+                  e.preventDefault();
+                  const updatedProduct = {
+                    SupplierName: document.getElementById('SupplierName').value,
+                    ContactName: document.getElementById('ContactName').value,
+                    ContactEmail: document.getElementById('ContactEmail').value,
+                    PhoneNumber: document.getElementById('PhoneNumber').value,
+                    Address: document.getElementById('Address').value,
+                    Ward: document.getElementById('Ward').value,
+                    District: document.getElementById('District').value,
+                    City: document.getElementById('City').value,
+                    rowguid: document.getElementById('rowguid').value,
+                  };
+
+                  // Gửi dữ liệu cập nhật đến API
+                  fetch(`/supplierRoute/${productId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updatedProduct),
+                  })
+                    .then((response) => {
+                      if (response.ok) {
+                        alert('Cập nhật sản phẩm thành công!');
+                        loadProducts();
+                        modal.style.display = 'none'; // Đóng modal sau khi cập nhật
+                      } else {
+                        alert('Có lỗi xảy ra khi cập nhật sản phẩm.');
+                      }
+                    })
+                    .catch((error) => console.error('Error:', error));
+                };
+              })
+              .catch((error) => console.error('Error fetching product details:', error));
+          });
+        });
+      };
+
+      // Đóng modal
+      const closeModal = document.querySelector('.close');
+      closeModal.addEventListener('click', () => {
+        document.getElementById('updateModal').style.display = 'none';
+      });
+
+      // Load products initially
+      loadProducts();
+    });

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 require('dotenv').config();
-const dbURI = `mongodb://localhost:27017/${process.env.DB_DATABASE}`;
+const dbURI = `mongodb://localhost:27017/CUAHANGQUANAO`;
 
 mongoose.connect(dbURI)
     .then(() => {
