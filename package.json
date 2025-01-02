@@ -9,21 +9,21 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "axios": "^1.7.7",
+    "axios": "^1.7.9",
     "body-parser": "^1.20.3",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.21.1",
-    "mongoose": "^8.8.0",
-    "msnodesqlv8": "^4.2.1",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "mongoose": "^8.9.3",
+    "msnodesqlv8": "^4.4.0",
     "mssql": "^11.0.1",
     "pug": "^3.0.3"
   },
   "devDependencies": {
-    "nodemon": "^3.1.7"
+    "nodemon": "^3.1.9"
   },
   "directories": {
     "test": "test"
   },
-  "description": ""
+  "description": "- Để cài đặt NodeJS ta cần tải NodeJS từ trang web https://nodejs.org/en/download về máy sau đó tiến hành cài đặt. Quy trình tải: Sau khi vào trang web đầu tiên ta chọn hệ điều hành sau đó chọn vào nút download phía bên dưới để tải về máy (Quy trình thực hiện như Hình 1)."
 }
