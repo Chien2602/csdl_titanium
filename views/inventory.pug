@@ -5,7 +5,7 @@ block main
   main(class="table", id="customers_table")
     section(class="table__header")
       h1 Danh sách đơn nhập hàng
-      button(onclick="window.location.href='/addInventory' class="insert" style="margin-right: 40px; margin-top: 25px; height: 45px; border: none; width: 150px; border-radius: 5px; background-color:rgb(74, 119, 168); color: white") Thêm hóa đơn
+      button(onclick="window.location.href='/addInventory'" class="insert" style="margin-right: 40px; margin-top: 25px; height: 45px; border: none; width: 150px; border-radius: 5px; background-color:rgb(74, 119, 168); color: white") Thêm hóa đơn
 
     section(class="table__body")
       table
@@ -101,7 +101,7 @@ block main
               fetch(`/inventoryRoute/${productId}`, { method: 'DELETE' })
                 .then((response) => {
                   if (response.ok) {
-                    alert('Xóa sản phẩm thành công!');
+                    alert('Xóa hóa đơn nhập hàng thành công!');
                     loadProducts();
                   } else {
                     alert('Có lỗi xảy ra khi xóa sản phẩm.');
@@ -152,7 +152,7 @@ block main
                   })
                     .then((response) => {
                       if (response.ok) {
-                        alert('Cập nhật sản phẩm thành công!');
+                        alert('Cập nhật hóa đơn thành công!');
                         loadProducts();
                         modal.style.display = 'none'; // Đóng modal sau khi cập nhật
                       } else {

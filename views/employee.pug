@@ -97,11 +97,11 @@ block main
         deleteButtons.forEach((button) => {
           button.addEventListener('click', (event) => {
             const productId = event.target.dataset.id;
-            if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
+            if (confirm('Bạn có chắc chắn muốn xóa thông tin nhân viên này?')) {
               fetch(`/admin/deleteProduct/${productId}`, { method: 'DELETE' })
                 .then((response) => {
                   if (response.ok) {
-                    alert('Xóa sản phẩm thành công!');
+                    alert('Xóa thông tin nhân viên thành công!');
                     loadProducts();
                   } else {
                     alert('Có lỗi xảy ra khi xóa sản phẩm.');

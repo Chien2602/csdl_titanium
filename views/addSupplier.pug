@@ -88,10 +88,10 @@ block main
             const result = await response.json();
 
             if (response.ok) {
-              alert('Người dùng đã được thêm thành công!');
-              window.location.href = '/user';
+              alert('Nhà cung cấp đã được thêm thành công!');
+              window.location.href = '/supplier';
             } else {
-              alert(`Thêm Người dùng thất bại: ${result.error || 'Lỗi không xác định'}`);
+              alert(`Thêm Nhà cung cấp thất bại: ${result.error || 'Lỗi không xác định'}`);
             }
           } catch (error) {
             console.error('Error adding product:', error);
@@ -104,7 +104,7 @@ block main
       /* Thiết lập cho toàn bộ trang */
       body {
         font-family: 'Arial', sans-serif;
-        background-color: #f5f5f5;
+        background: linear-gradient(135deg,#B0D4B8, #B6DDDC);
         margin: 0;
         padding: 0;
       }

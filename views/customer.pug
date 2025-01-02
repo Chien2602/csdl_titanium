@@ -92,7 +92,7 @@ block main
         deleteButtons.forEach((button) => {
           button.addEventListener('click', (event) => {
             const productId = event.target.dataset.id;
-            if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
+            if (confirm('Bạn có chắc chắn muốn xóa thông tin khách hàng này này?')) {
               fetch(`/customerRoute/${productId}`, { method: 'DELETE' })
                 .then((response) => {
                   if (response.ok) {
@@ -142,7 +142,7 @@ block main
                   })
                     .then((response) => {
                       if (response.ok) {
-                        alert('Cập nhật sản phẩm thành công!');
+                        alert('Cập nhật khách hàng thành công!');
                         loadProducts();
                         modal.style.display = 'none'; // Đóng modal sau khi cập nhật
                       } else {

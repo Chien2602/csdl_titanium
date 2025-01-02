@@ -49,6 +49,7 @@
 
   /* Modal Form Inputs */
   input[type="text"],
+  input[type="email"],
   textarea {
     width: 100%;
     padding: 15px;
@@ -63,7 +64,8 @@
   }
 
   input[type="text"]:focus,
-  textarea:focus {
+  textarea:focus,
+  input[type="email"]:focus {
     border-color: #70C2B4;
     box-shadow: 0 0 10px rgba(112, 194, 180, 0.6);
   }

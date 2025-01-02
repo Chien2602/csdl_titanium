@@ -93,11 +93,11 @@ block main
         deleteButtons.forEach((button) => {
           button.addEventListener('click', (event) => {
             const productId = event.target.dataset.id;
-            if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
+            if (confirm('Bạn có chắc chắn muốn xóa thông tin admin này?')) {
               fetch(`/adminRoute/${productId}`, { method: 'DELETE' })
                 .then((response) => {
                   if (response.ok) {
-                    alert('Xóa sản phẩm thành công!');
+                    alert('Xóa admin thành công!');
                     loadProducts();
                   } else {
                     alert('Có lỗi xảy ra khi xóa sản phẩm.');
@@ -143,7 +143,7 @@ block main
                   })
                     .then((response) => {
                       if (response.ok) {
-                        alert('Cập nhật sản phẩm thành công!');
+                        alert('Cập nhật admin thành công!');
                         loadProducts();
                         modal.style.display = 'none'; // Đóng modal sau khi cập nhật
                       } else {
