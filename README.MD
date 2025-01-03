@@ -51,7 +51,7 @@ Mở terminal của Visual Studio Code sau đó gõ các câu lệnh sau để c
 
 # Bước 4: Chạy mã nguồn
 Để chạy mã nguồn ta mở terminal trong Visual Studio Code và chạy câu lệnh "nodemon index" để chạy mã nguồn (Như Hình 11).
-
+*(Nếu như thư viện nodemon tiếp tục bị lỗi không chạy được thì có thể thay câu lệnh thành "node index" để chạy mã nguồn.)
 ![alt text](image/image10.png)
 <p align="center">Hình 11: Chạy mã nguồn.</p>
 
@@ -156,3 +156,8 @@ Mã nguồn được chia ra các thư mục như sau:
 - File .env: Chứa các thông tin kết nối đến cơ sở dữ liệu.
 - File addData.py: Thêm dữ liệu từ SQL Server vào MongoDB.
 - File index.js: Đây là file chính chứa các đường dẫn đến các file khác.
+- Thư mục node_modules: Chứa các module thư viện của NodeJS.
+- Giao diện được thiết kế bằng pugJS.
+- Dữ liệu đổ lên giao diện được gọi từ các API được viết trong thư mục routes.
+- Cơ sở dữ liệu hướng đối tượng được thiết kế riêng từng lớp trong cơ sở dữ liệu, các phương thức trong lớp đều được gọi
+từ API.

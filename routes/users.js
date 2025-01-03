@@ -34,7 +34,7 @@ router.get('/:id', async (req, res) => {
 
 // POST /users
 router.post('/', async (req, res) => {
-    const { UserID, Username, Password, Email, FullName, PhoneNumber, Ward, District, City, Region, Role, rowguid } = req.body;
+    const { UserID, Username, Password, Email, FullName, PhoneNumber, Ward, District, City, Region, Role, CreatedAt} = req.body;
 
     try {
         // SQL Insert
@@ -50,8 +50,9 @@ router.post('/', async (req, res) => {
             .input('City', sql.NVarChar(100), City)
             .input('Region', sql.NVarChar(10), Region)
             .input('Role', sql.VarChar(20), Role || 'customer')
-            .query(`INSERT INTO dbo.USERS (UserID, Username, Password, Email, FullName, PhoneNumber, Ward, District, City, Region, Role)
-                    VALUES (@UserID, @Username, @Password, @Email, @FullName, @PhoneNumber, @Ward, @District, @City, @Region, @Role)`);
+            .input('CreatedAt', sql.Date, CreatedAt)
+            .query(`INSERT INTO dbo.USERS (UserID, Username, Password, Email, FullName, PhoneNumber, Ward, District, City, Region, Role, CreatedAt)
+                    VALUES (@UserID, @Username, @Password, @Email, @FullName, @PhoneNumber, @Ward, @District, @City, @Region, @Role, @CreatedAt)`);
 
         // MongoDB Insert
         const userDocument = {
@@ -67,7 +68,6 @@ router.post('/', async (req, res) => {
             Region,
             Role: Role || 'customer',
             CreatedAt,
-            rowguid
         };
 
         await connMongo.collection('USERS').insertOne(userDocument);  // Save to MongoDB
