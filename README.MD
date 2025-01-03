@@ -143,16 +143,16 @@ Các đường dẫn API:
 
 # Giải thích mã nguồn
 Mã nguồn được chia ra các thư mục như sau:
-- Thư mục connects: Chưa 2 file Mongodb.js là file kết nối đến MongoDB và file Sql.js là file kết nối đến SQL Server.
-- Thư mục image: Chưa các file ảnh hướng dẫn sử dụng mã nguồn.
+- Thư mục connects: Chứa 2 file Mongodb.js là file kết nối đến MongoDB và file Sql.js là file kết nối đến SQL Server.
+- Thư mục image: Chứa các file ảnh hướng dẫn sử dụng mã nguồn.
 - Thư mục objects: Chứa các file code cơ sở dữ liệu hướng đối tượng.
-- Thư mục pages: Chưa các module kết nối đến file pug.
+- Thư mục pages: Chứa các module kết nối đến file pug.
 - Thư mục routes: Chứa các file code API của các bảng trong cơ sở dữ liệu.
 - Thư mục public: Chứa các thư mục con chứa file tĩnh như css, javascript và image.
 - Thư mục views: Chứa giao diện các trang:
  + Thư mục partials: Chứa các file giao diện của header và footer.
- + File default.pug chứa giao diện mặc định của các trang.
- + Các file còn là giao diện của các trang.
-- file .env: Chứa các thông tin kết nối đến cơ sở dữ liệu.
-- file addData.py: Thêm dữ liệu từ SQL Server vào MongoDB.
-- file index.js: Đây là file chính chứa các đường dẫn đến các file khác.
+ + File default.pug: Chứa giao diện mặc định của các trang.
+ + Các file còn lại là giao diện của các trang.
+- File .env: Chứa các thông tin kết nối đến cơ sở dữ liệu.
+- File addData.py: Thêm dữ liệu từ SQL Server vào MongoDB.
+- File index.js: Đây là file chính chứa các đường dẫn đến các file khác.
